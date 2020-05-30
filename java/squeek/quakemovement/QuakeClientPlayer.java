@@ -57,8 +57,12 @@ public class QuakeClientPlayer
 		double d0 = player.posX;
 		double d1 = player.posY;
 		double d2 = player.posZ;
-
-		if ((player.capabilities.isFlying || player.isElytraFlying()) && player.getRidingEntity() == null)
+		boolean isCapped = false;
+		boolean airSpeedCapped = (boolean) ModConfig.MAX_AIR_ACCEL_CAPPED;
+		float maxAirSpeedCap = (float) ModConfig.MAX_AIR_ACCEL_SPEED_CAP/20;
+		if (airSpeedCapped && MathHelper.sqrt(player.motionX*player.motionX+player.motionZ*player.motionZ)>maxAirSpeedCap)
+			isCapped = true;
+		if ((player.capabilities.isFlying || player.isElytraFlying() || isCapped) && player.getRidingEntity() == null)
 			return false;
 		else
 			didQuakeMovement = quake_moveEntityWithHeading(player, sidemove, upmove, forwardmove);
@@ -701,13 +705,17 @@ public class QuakeClientPlayer
 	private static void quake_AirAccelerate(EntityPlayer player, float wishspeed, double wishX, double wishZ, double accel)
 	{
 		double addspeed, accelspeed, currentspeed;
-
+		double oldMagnitude, baseMotionX,baseMotionZ,newMagnitude,magnitudeMod;
 		float wishspd = wishspeed;
 		float maxAirAcceleration = (float) ModConfig.MAX_AIR_ACCEL_PER_TICK;
-
+		float maxAirSpeed = (float) ModConfig.MAX_AIR_ACCEL_SPEED/20;
+		//boolean gliderFix = (boolean) ModConfig.GLIDER_FIX;
+		//if (player.motionY<0 && gliderFix && player.fallDistance==0f)
+		//	return;
 		if (wishspd > maxAirAcceleration)
 			wishspd = maxAirAcceleration;
-
+		oldMagnitude = MathHelper.sqrt(player.motionX*player.motionX + player.motionZ*player.motionZ);
+		magnitudeMod = 1;
 		// Determine veer amount
 		// this is a dot product
 		currentspeed = player.motionX * wishX + player.motionZ * wishZ;
@@ -727,8 +735,16 @@ public class QuakeClientPlayer
 			accelspeed = addspeed;
 
 		// Adjust pmove vel.
-		player.motionX += accelspeed * wishX;
-		player.motionZ += accelspeed * wishZ;
+		baseMotionX = player.motionX + accelspeed * wishX;
+		baseMotionZ = player.motionZ + accelspeed * wishZ;
+		newMagnitude = MathHelper.sqrt(baseMotionX*baseMotionX+baseMotionZ*baseMotionZ);
+		if (oldMagnitude>maxAirSpeed && newMagnitude>oldMagnitude)
+			magnitudeMod=oldMagnitude/newMagnitude;
+			player.motionX=baseMotionX*magnitudeMod;
+			player.motionZ=baseMotionZ*magnitudeMod;
+		//player.motionX=baseMotionX;
+		//player.motionZ=baseMotionZ;
+			
 	}
 
 	@SuppressWarnings("unused")

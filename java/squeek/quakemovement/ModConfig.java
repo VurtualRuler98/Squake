@@ -63,6 +63,17 @@ public class ModConfig
 	private static final String MAX_AIR_ACCEL_PER_TICK_NAME = "maxAirAccelerationPerTick";
 	private static final double MAX_AIR_ACCEL_PER_TICK_DEFAULT = 0.045D;
 
+	public static double MAX_AIR_ACCEL_SPEED;
+	private static final String MAX_AIR_ACCEL_SPEED_NAME = "maxAirAccelSpeed";
+	private static final double MAX_AIR_ACCEL_SPEED_DEFAULT = 20;
+	public static double MAX_AIR_ACCEL_SPEED_CAP;
+	private static final String MAX_AIR_ACCEL_SPEED_CAP_NAME = "maxAirAccelSpeedCap";
+	private static final double MAX_AIR_ACCEL_SPEED_CAP_DEFAULT = 21;
+
+	public static boolean MAX_AIR_ACCEL_CAPPED;
+	private static final String MAX_AIR_ACCEL_CAPPED_NAME = "maxAirAccelCapped";
+	private static final boolean MAX_AIR_ACCEL_CAPPED_DEFAULT = true;
+
 	public static boolean ENABLED;
 	private static Property ENABLED_PROPERTY;
 	private static final String ENABLED_NAME = "enabled";
@@ -84,6 +95,8 @@ public class ModConfig
 		UNCAPPED_BUNNYHOP_ENABLED = config.get(CATEGORY_MOVEMENT, UNCAPPED_BUNNYHOP_ENABLED_NAME, UNCAPPED_BUNNYHOP_ENABLED_DEFAULT, "if enabled, the soft and hard caps will not be applied at all").getBoolean(UNCAPPED_BUNNYHOP_ENABLED_DEFAULT);
 		AIR_ACCELERATE = config.get(CATEGORY_MOVEMENT, AIR_ACCELERATE_NAME, AIR_ACCELERATE_DEFAULT, "a higher value means you can turn more sharply in the air without losing speed").getDouble(AIR_ACCELERATE_DEFAULT);
 		MAX_AIR_ACCEL_PER_TICK = config.get(CATEGORY_MOVEMENT, MAX_AIR_ACCEL_PER_TICK_NAME, MAX_AIR_ACCEL_PER_TICK_DEFAULT, "a higher value means faster air acceleration").getDouble(MAX_AIR_ACCEL_PER_TICK_DEFAULT);
+		MAX_AIR_ACCEL_SPEED = config.get(CATEGORY_MOVEMENT, MAX_AIR_ACCEL_SPEED_NAME, MAX_AIR_ACCEL_SPEED_DEFAULT, "Maximum speed that can be obtained by bunnyhopping.").getDouble(MAX_AIR_ACCEL_SPEED_DEFAULT);
+		MAX_AIR_ACCEL_SPEED_CAP = config.get(CATEGORY_MOVEMENT, MAX_AIR_ACCEL_SPEED_CAP_NAME, MAX_AIR_ACCEL_SPEED_CAP_DEFAULT, "Maximum speed cap, above which vanilla physics take over.").getDouble(MAX_AIR_ACCEL_SPEED_CAP_DEFAULT);
 		ACCELERATE = config.get(CATEGORY_MOVEMENT, ACCELERATE_NAME, ACCELERATE_DEFAULT, "a higher value means you accelerate faster on the ground").getDouble(ACCELERATE_DEFAULT);
 		HARD_CAP = (float) (config.get(CATEGORY_MOVEMENT, HARD_CAP_NAME, HARD_CAP_DEFAULT, "see " + UNCAPPED_BUNNYHOP_ENABLED_NAME + "; if you ever jump while above the hard cap speed (moveSpeed*hardCapThreshold), your speed is set to the hard cap speed").getDouble(HARD_CAP_DEFAULT));
 		SOFT_CAP = (float) (config.get(CATEGORY_MOVEMENT, SOFT_CAP_NAME, SOFT_CAP_DEFAULT, "see " + UNCAPPED_BUNNYHOP_ENABLED_NAME + " and " + SOFT_CAP_DEGEN_NAME + "; soft cap speed = (moveSpeed*softCapThreshold)").getDouble(SOFT_CAP_DEFAULT));
@@ -97,6 +110,7 @@ public class ModConfig
 		TRIMP_MULTIPLIER = (float) (config.get(CATEGORY_MOVEMENT, TRIMP_MULTIPLIER_NAME, TRIMP_MULTIPLIER_DEFAULT, "a lower value means less horizontal speed converted to vertical speed and vice versa").getDouble(TRIMP_MULTIPLIER_DEFAULT));
 
 		INCREASED_FALL_DISTANCE = (float) (config.get(CATEGORY_MOVEMENT, INCREASED_FALL_DISTANCE_NAME, INCREASED_FALL_DISTANCE_DEFAULT, "increases the distance needed to fall in order to take fall damage; this is a server-side setting").getDouble(INCREASED_FALL_DISTANCE_DEFAULT));
+		MAX_AIR_ACCEL_CAPPED = config.get(CATEGORY_MOVEMENT,MAX_AIR_ACCEL_CAPPED_NAME,MAX_AIR_ACCEL_CAPPED_DEFAULT, "Revert to vanilla physics above the airspeed cap?").getBoolean(MAX_AIR_ACCEL_CAPPED_DEFAULT);
 
 		ENABLED_PROPERTY = config.get(CATEGORY_MOVEMENT, ENABLED_NAME, ENABLED_DEFAULT, "turns off/on the quake-style movement for the client (essentially the saved value of the ingame toggle keybind)");
 		ENABLED = ENABLED_PROPERTY.getBoolean(ENABLED_DEFAULT);
